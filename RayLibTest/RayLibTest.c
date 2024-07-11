@@ -41,9 +41,6 @@ int main()
 
     Rectangle rect = { (GetScreenWidth() / 2) - (100 / 2), (GetScreenHeight() / 2) - (100 / 2), 100, 100};
 
-    bool isHeightIncreasing = true;
-    bool isWidthIncreasing = true;
-
     while (!WindowShouldClose())
     {
         textTopY = 10;

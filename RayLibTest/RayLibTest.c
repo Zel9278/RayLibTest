@@ -52,10 +52,10 @@ int main()
         if (IsKeyPressed(KEY_D)) {
 			isDVD = !isDVD;
             if (isDVD) {
-				positionX = GetWindowPosition().x;
-				positionY = GetWindowPosition().y;
+                positionX = GetWindowPosition().x;
+                positionY = GetWindowPosition().y;
                 accelX = generateRandomAccel();
-				accelY = generateRandomAccel();
+                accelY = generateRandomAccel();
 			}
 		}
 

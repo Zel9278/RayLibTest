@@ -11,8 +11,10 @@ float generateRandomAccel() {
 
 int main()
 {
-    int textY = 0;
-    double lastTime = GetTime();
+    bool isDVD = false;
+
+    int textTopY = 0;
+    int textBottomY = 0;
 
     int positionX = 0;
     int positionY = 0;
@@ -24,8 +26,6 @@ int main()
     InitWindow(350, 200, "RayLib Test");
     SetExitKey(KEY_NULL);
     SetTargetFPS(60);
-
-    // dvd movement
 
     float moveX = 1.0f;
     float moveY = 1.0f;
@@ -39,58 +39,64 @@ int main()
     int screenWidth = GetMonitorWidth(GetCurrentMonitor());
     int screenHeight = GetMonitorHeight(GetCurrentMonitor());
 
+    Rectangle rect = { (GetScreenWidth() / 2) - (100 / 2), (GetScreenHeight() / 2) - (100 / 2), 100, 100};
+
+    bool isHeightIncreasing = true;
+    bool isWidthIncreasing = true;
+
     while (!WindowShouldClose())
     {
-        textY = 10;
+        textTopY = 10;
+        textBottomY = GetRenderHeight() - 30;
 
-        moveX += accelX;
-        moveY += accelY;
+        if (IsKeyPressed(KEY_D)) {
+			isDVD = !isDVD;
+            if (isDVD) {
+				positionX = GetWindowPosition().x;
+				positionY = GetWindowPosition().y;
+                accelX = generateRandomAccel();
+				accelY = generateRandomAccel();
+			}
+		}
 
-        int nextX = (int)((float)positionX + moveX);
-        int nextY = (int)((float)positionY + moveY);
+        if (isDVD) {
+            moveX += accelX;
+            moveY += accelY;
 
-        if (nextX < 0 || nextX + GetScreenWidth() > screenWidth) {
-            moveX = -moveX;
-            accelX = generateRandomAccel();
+            int nextX = (int)((float)positionX + moveX);
+            int nextY = (int)((float)positionY + moveY);
+
+            if (nextX < 0 || nextX + GetScreenWidth() > screenWidth) {
+                moveX = -moveX;
+                accelX = generateRandomAccel();
+            }
+
+            if (nextY < 0 || nextY + GetScreenHeight()> screenHeight) {
+                moveY = -moveY;
+                accelY = generateRandomAccel();
+            }
+
+            positionX += (int)moveX;
+            positionY += (int)moveY;
+
+            SetWindowPosition(positionX, positionY);
         }
-
-        if (nextY < 0 || nextY + GetScreenHeight()> screenHeight) {
-            moveY = -moveY;
-            accelY = generateRandomAccel();
-        }
-
-        positionX += (int)moveX;
-        positionY += (int)moveY;
-
-        SetWindowPosition(positionX, positionY);
 
         BeginDrawing();
 
         ClearBackground(DARKGRAY);
 
-        double currentTime = GetTime();
-        if (currentTime - lastTime >= 0.1)  // Check if 1 second has passed
-        {
-            lastTime = currentTime;
-            accelXDraw = accelX;
-            accelYDraw = accelY;
-        }
+        DrawRectangleRec(rect, RED);
 
-        DrawText(TextFormat("accelX: %f", accelXDraw), 10, textY, 20, BLACK);
-        textY += 20;
-        DrawText(TextFormat("accelY: %f", accelYDraw), 10, textY, 20, BLACK);
-        textY += 20;
+        DrawText("Hello,", 10, textTopY, 20, BLACK);
+        textTopY += 20;
+        DrawText("Window.", 10, textTopY, 20, BLACK);
+        textTopY += 20;
+        DrawText(TextFormat("isDVD[D]: %s", isDVD ? "true" : "false"), 10, textTopY, 20, BLACK);
 
-        DrawText(TextFormat("moveX: %f", moveX), 10, textY, 20, BLACK);
-        textY += 20;
-        DrawText(TextFormat("moveY: %f", moveY), 10, textY, 20, BLACK);
-        textY += 20;
-
-        // Draw "Hello World!" text at the bottom-left corner
-        DrawText("Hello World!", 10, GetRenderHeight() - 30, 20, BLACK);
-
-        // Draw FPS just below the "Hello World!" text
-        DrawFPS(10, GetRenderHeight() - 50);
+        DrawText("Hello World!", 10, textBottomY, 20, BLACK);
+        textBottomY -= 20;
+        DrawFPS(10, textBottomY);
 
         EndDrawing();
     }

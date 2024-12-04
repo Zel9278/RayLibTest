@@ -47,4 +47,4 @@ jobs:
       with:
         name: Release
         path: |
-            RauLibTest/bin/**
+            RauLibTest/x64/Release/**
